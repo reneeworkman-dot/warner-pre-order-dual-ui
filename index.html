@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Warner Pre-Order (dual UI)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #e8ecf1;
+        --bg-wash: #f3f5f8;
+        --paper: #ffffff;
+        --ink: #161b22;
+        --muted: #5a6572;
+        --line: #d4dae3;
+        --accent: #1a4a56;
+        --accent-soft: rgba(26, 74, 86, 0.08);
+        --pos: #1f6b52;
+        --neg: #a33d3d;
+        --space-2: 0.7rem;
+        --space-3: 1.15rem;
+        --space-4: 1.75rem;
+        --radius: 2px;
+        --shadow: 0 1px 0 rgba(22, 27, 34, 0.04);
+        --font: 'Outfit', sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        color: var(--ink);
+        font-family: var(--font);
+        letter-spacing: -0.01em;
+        background-color: var(--bg);
+        background-image:
+          radial-gradient(1100px 480px at 0% -8%, rgba(26, 74, 86, 0.09), transparent 58%),
+          radial-gradient(900px 420px at 100% 0%, rgba(90, 101, 114, 0.07), transparent 52%),
+          linear-gradient(180deg, var(--bg-wash) 0%, var(--bg) 42%, #e4e9ef 100%);
+        background-attachment: fixed;
+      }
+      @keyframes viewIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @keyframes livePulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.45;
+        }
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a.name-link {
+        color: var(--ink);
+        border-bottom: 1px solid transparent;
+      }
+      a.name-link:hover {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+      }
+      .app {
+        width: min(1100px, calc(100% - 2rem));
+        margin: 0 auto;
+        padding: var(--space-4) 0 3.25rem;
+      }
+      .top {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: var(--space-2);
+        margin-bottom: var(--space-3);
+        padding-bottom: var(--space-3);
+        border-bottom: 1px solid var(--line);
+        animation: viewIn 0.45s ease both;
+      }
+      .brand {
+        font-size: clamp(1.85rem, 4.5vw, 2.55rem);
+        font-weight: 700;
+        margin: 0;
+        line-height: 1.05;
+        letter-spacing: -0.035em;
+      }
+      .brand em {
+        font-style: normal;
+        font-weight: 600;
+        color: var(--accent);
+      }
+      .chrome {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem 1.35rem;
+        align-items: center;
+        justify-content: center;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .live-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        color: var(--ink);
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+      }
+      .live-dot {
+        width: 0.45rem;
+        height: 0.45rem;
+        border-radius: 50%;
+        background: var(--accent);
+        animation: livePulse 2.2s ease-in-out infinite;
+      }
+      nav {
+        display: flex;
+        gap: 0.85rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      nav a {
+        position: relative;
+        color: var(--muted);
+        padding: 0.3rem 0;
+        font-size: 0.88rem;
+        font-weight: 500;
+      }
+      nav a.primary {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      nav a.secondary {
+        font-size: 0.8rem;
+        font-weight: 400;
+        opacity: 0.85;
+      }
+      nav a::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 1.5px;
+        background: var(--accent);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.22s ease;
+      }
+      nav a:hover,
+      nav a.active {
+        color: var(--ink);
+        opacity: 1;
+      }
+      nav a:hover::after,
+      nav a.active::after {
+        transform: scaleX(1);
+      }
+      .toolbar {
+        margin-bottom: var(--space-2);
+      }
+      input[type='search'] {
+        font: inherit;
+        border: 1px solid var(--line);
+        background: var(--paper);
+        color: var(--ink);
+        padding: 0.55rem 0.75rem;
+        border-radius: var(--radius);
+        min-width: min(100%, 16rem);
+      }
+      input[type='search']:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-soft);
+      }
+      .section {
+        margin: var(--space-4) 0;
+        animation: viewIn 0.55s ease both;
+      }
+      .section h2 {
+        font-size: 1.35rem;
+        font-weight: 600;
+        margin: 0 0 0.25rem;
+        letter-spacing: -0.02em;
+      }
+      .hint {
+        color: var(--muted);
+        margin: 0 0 0.85rem;
+        font-size: 0.9rem;
+      }
+      .table-shell {
+        border: 1px solid var(--line);
+        background: var(--paper);
+        box-shadow: var(--shadow);
+        overflow: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+      th,
+      td {
+        padding: 0.62rem 0.75rem;
+        border-bottom: 1px solid var(--line);
+        white-space: nowrap;
+        text-align: left;
+      }
+      th {
+        position: sticky;
+        top: 0;
+        background: #f0f3f7;
+        color: var(--muted);
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      tbody tr:hover td {
+        background-color: rgba(26, 74, 86, 0.035);
+      }
+      td.num {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+      .pos {
+        color: var(--pos);
+      }
+      .neg {
+        color: var(--neg);
+      }
+      .status {
+        color: var(--muted);
+        font-size: 0.9rem;
+        text-align: center;
+        margin: 0 0 var(--space-2);
+      }
+      .status.error {
+        color: var(--neg);
+      }
+      .detail-hero {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: var(--space-3);
+        margin-bottom: var(--space-2);
+        padding: 0.9rem 0 1rem;
+        border-bottom: 1px solid var(--line);
+      }
+      .detail-artist {
+        color: var(--muted);
+        font-size: 0.92rem;
+        font-weight: 500;
+      }
+      .detail-title {
+        font-size: clamp(1.45rem, 3.5vw, 2.05rem);
+        font-weight: 650;
+        line-height: 1.08;
+        letter-spacing: -0.025em;
+        margin-top: 0.15rem;
+      }
+      .tb-metrics {
+        display: flex;
+        gap: 1.25rem;
+        align-items: flex-end;
+      }
+      .metric-chip {
+        border-left: 1px solid var(--line);
+        padding-left: 1rem;
+      }
+      .metric-chip:first-child {
+        border-left: 0;
+        padding-left: 0;
+      }
+      .metric-chip .lbl {
+        display: block;
+        color: var(--muted);
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .metric-chip .val {
+        font-size: 1.35rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+      }
+      .config-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        align-items: center;
+        margin: 0.85rem 0;
+      }
+      .config-label {
+        color: var(--muted);
+        margin-right: 0.25rem;
+        font-size: 0.85rem;
+      }
+      button.cfg-tab {
+        font: inherit;
+        cursor: pointer;
+        border: 1px solid var(--line);
+        background: transparent;
+        color: var(--muted);
+        padding: 0.45rem 0.7rem;
+        border-radius: var(--radius);
+      }
+      button.cfg-tab.on {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-soft);
+        font-weight: 500;
+      }
+      tr.row-total td {
+        font-weight: 600;
+        background: rgba(22, 27, 34, 0.02);
+      }
+      .stub {
+        color: var(--muted);
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="top">
+        <h1 class="brand">Warner <em>Pre-Order</em></h1>
+        <div class="chrome">
+          <div class="live-pill">
+            <span class="live-dot" aria-hidden="true"></span>
+            <span id="liveLabel">Loading…</span>
+          </div>
+          <nav>
+            <a class="primary" href="#/" data-nav="/">Summary</a>
+            <a class="secondary" href="#/retailers" data-nav="/retailers">Retailers breakdown</a>
+            <a class="secondary" href="#/analysis" data-nav="/analysis">Working analysis</a>
+          </nav>
+        </div>
+      </header>
+      <p id="status" class="status" hidden></p>
+      <div id="view"></div>
+    </div>
+    <script src="./config.js"></script>
+    <script>
+      var state = { data: null, q: '', config: 'All' };
+
+      function $(id) {
+        return document.getElementById(id);
+      }
+      function esc(v) {
+        return String(v == null ? '' : v)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+      function pctClass(v) {
+        var n = Number(String(v).replace(/[%\s,]/g, ''));
+        if (!String(v).trim() || String(v).trim() === '-' || isNaN(n)) return '';
+        return n >= 0 ? 'pos' : 'neg';
+      }
+      function fmt(v) {
+        if (v == null || v === '' || v === '-') return '—';
+        return String(v);
+      }
+      function parseNum_(v) {
+        if (v == null || v === '' || v === '-' || v === 'N/A') return null;
+        var n = Number(String(v).replace(/[,\s]/g, ''));
+        return isNaN(n) ? null : n;
+      }
+      function fmtNum_(n) {
+        if (n == null || isNaN(n)) return '—';
+        return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      }
+      function appleUsForRow_(r) {
+        if (r.appleUs != null && r.appleUs !== '') return r.appleUs;
+        if (r.digitalAdSaves != null && r.digitalAdSaves !== '') return r.digitalAdSaves;
+        return '';
+      }
+      function spotifyForRow_(r) {
+        return r.spotifyGlobal != null && r.spotifyGlobal !== '' ? r.spotifyGlobal : '';
+      }
+      function totalDigital_(apple, spotify) {
+        var a = parseNum_(apple);
+        var s = parseNum_(spotify);
+        if (a == null && s == null) return '';
+        return fmtNum_((a || 0) + (s || 0));
+      }
+      function lastUpdatedLabel_() {
+        var w = (state.data && state.data.week) || {};
+        var iso = w.lastRefreshedAt || w.lastIngestAt || w.ingestedAt || '';
+        if (!iso) return 'Not yet refreshed';
+        try {
+          return new Date(iso).toLocaleString();
+        } catch (e) {
+          return String(iso);
+        }
+      }
+      function setLiveStatus_(text, isError) {
+        var el = $('liveLabel');
+        if (el) el.textContent = text;
+        if (el) el.style.color = isError ? 'var(--neg)' : '';
+      }
+      function setNav() {
+        var hash = location.hash.replace(/^#/, '') || '/';
+        document.querySelectorAll('nav a').forEach(function (a) {
+          var nav = a.getAttribute('data-nav');
+          var active =
+            nav === '/'
+              ? hash === '/' || hash === '' || hash.indexOf('title/') === 0
+              : hash.indexOf(nav) === 0;
+          a.classList.toggle('active', active);
+        });
+      }
+      function liveChannels_() {
+        return (state.data.channels || []).filter(function (c) {
+          return (
+            c.id === 'total' ||
+            c.id === 'd2c' ||
+            c.id === 'amazon' ||
+            c.id === 'target' ||
+            c.id === 'bn' ||
+            c.id === 'uo' ||
+            c.id === 'ht' ||
+            c.id === 'walmart' ||
+            c.id === 's4a' ||
+            c.id === 'digital_amazon' ||
+            c.id === 'digital_apple' ||
+            c.id === 'digital_itunes'
+          );
+        });
+      }
+      function configOptions() {
+        var seen = {};
+        var order = ['Total', 'CD', 'LP', 'Cassette', 'Other'];
+        (state.data.detail || []).forEach(function (r) {
+          if (r.config) seen[r.config] = true;
+        });
+        var out = order.filter(function (c) {
+          return seen[c];
+        });
+        Object.keys(seen).forEach(function (c) {
+          if (out.indexOf(c) === -1) out.push(c);
+        });
+        return out.length ? out : order;
+      }
+      function detailRowsForTitle(titleKey) {
+        var order = configOptions();
+        return (state.data.detail || [])
+          .filter(function (r) {
+            return r.titleKey === titleKey;
+          })
+          .sort(function (a, b) {
+            return order.indexOf(a.config) - order.indexOf(b.config);
+          });
+      }
+      function goTitle(titleKey) {
+        location.hash = '#/title/' + encodeURIComponent(titleKey);
+        route();
+      }
+      function route() {
+        try {
+          setNav();
+          if (!state.data) return;
+          var hash = location.hash.replace(/^#/, '') || '/';
+          var parts = hash.split('/').filter(Boolean);
+          if (parts[0] === 'title' && parts[1]) {
+            renderTitleDetail(decodeURIComponent(parts.slice(1).join('/')));
+          } else if (parts[0] === 'retailers') renderRetailers();
+          else if (parts[0] === 'analysis') renderAnalysis();
+          else renderSummary();
+        } catch (err) {
+          $('view').innerHTML =
+            '<p class="status error">Page error: ' +
+            esc(String(err && err.message ? err.message : err)) +
+            ' <a href="#/">← Summary</a></p>';
+        }
+      }
+      function renderSummary() {
+        var q = state.q.toLowerCase();
+        var summary = (state.data.summary || []).filter(function (r) {
+          return (
+            !q ||
+            String(r.artist).toLowerCase().indexOf(q) !== -1 ||
+            String(r.title).toLowerCase().indexOf(q) !== -1
+          );
+        });
+        var html =
+          '<div class="toolbar"><input id="q" type="search" placeholder="Filter artist or title" value="' +
+          esc(state.q) +
+          '" /></div><section class="section"><h2>Summary</h2>' +
+          '<div class="table-shell"><table><thead><tr>' +
+          '<th>Artist</th><th>Title</th><th>% Chg</th><th>TW</th><th>LW</th>' +
+          '<th>Apple US</th><th>Spotify Global</th><th>Total</th>' +
+          '</tr></thead><tbody>';
+        summary.forEach(function (r) {
+          var apple = appleUsForRow_(r);
+          var spotify = spotifyForRow_(r);
+          var total = totalDigital_(apple, spotify);
+          html +=
+            '<tr><td>' +
+            esc(r.artist) +
+            '</td><td><a class="name-link" href="#/title/' +
+            encodeURIComponent(r.titleKey) +
+            '" data-title-key="' +
+            esc(r.titleKey) +
+            '">' +
+            esc(r.title) +
+            '</a></td><td class="num ' +
+            pctClass(r.pctChg) +
+            '">' +
+            esc(fmt(r.pctChg)) +
+            '</td><td class="num">' +
+            esc(fmt(r.tw)) +
+            '</td><td class="num">' +
+            esc(fmt(r.lw)) +
+            '</td><td class="num">' +
+            esc(fmt(apple)) +
+            '</td><td class="num">' +
+            esc(fmt(spotify)) +
+            '</td><td class="num">' +
+            esc(fmt(total)) +
+            '</td></tr>';
+        });
+        if (!summary.length) {
+          html += '<tr><td colspan="8">No titles yet.</td></tr>';
+        }
+        html += '</tbody></table></div></section>';
+        $('view').innerHTML = html;
+        $('q').oninput = function (e) {
+          state.q = e.target.value;
+          renderSummary();
+        };
+        document.querySelectorAll('a[data-title-key]').forEach(function (a) {
+          a.addEventListener('click', function (e) {
+            e.preventDefault();
+            goTitle(a.getAttribute('data-title-key'));
+          });
+        });
+      }
+      function renderTitleDetail(titleKey) {
+        var summary = (state.data.summary || []).filter(function (r) {
+          return r.titleKey === titleKey;
+        })[0];
+        var rows = detailRowsForTitle(titleKey);
+        if (!summary && !rows.length) {
+          $('view').innerHTML =
+            '<p class="status error">Title not found. <a href="#/">← Summary</a></p>';
+          return;
+        }
+        var artist = (summary && summary.artist) || (rows[0] && rows[0].artist) || '';
+        var title = (summary && summary.title) || (rows[0] && rows[0].title) || '';
+        var totalRow =
+          rows.filter(function (r) {
+            return r.config === 'Total';
+          })[0] || rows[0];
+        var channels = liveChannels_();
+        var tw =
+          (totalRow && totalRow.channels && totalRow.channels.total && totalRow.channels.total.tw) ||
+          (summary && summary.tw) ||
+          '—';
+        var lw =
+          (totalRow && totalRow.channels && totalRow.channels.total && totalRow.channels.total.lw) ||
+          (summary && summary.lw) ||
+          '—';
+        if (!state.config) state.config = 'All';
+        var configs = configOptions();
+        var focusRows =
+          state.config === 'All'
+            ? rows
+            : rows.filter(function (r) {
+                return r.config === state.config;
+              });
+        var html =
+          '<div><a href="#/">← Summary</a></div><section class="section"><h2>Detail</h2><div class="detail-hero"><div><div class="detail-artist">' +
+          esc(artist) +
+          '</div><div class="detail-title">' +
+          esc(title) +
+          '</div></div><div class="tb-metrics"><span class="metric-chip"><span class="lbl">Total TW</span><span class="val">' +
+          esc(fmt(tw)) +
+          '</span></span><span class="metric-chip"><span class="lbl">Total LW</span><span class="val">' +
+          esc(fmt(lw)) +
+          '</span></span></div></div><div class="config-bar"><span class="config-label">Config</span><button type="button" class="cfg-tab' +
+          (state.config === 'All' ? ' on' : '') +
+          '" data-cfg="All">All</button>';
+        configs.forEach(function (c) {
+          html +=
+            '<button type="button" class="cfg-tab' +
+            (state.config === c ? ' on' : '') +
+            '" data-cfg="' +
+            esc(c) +
+            '">' +
+            esc(c) +
+            '</button>';
+        });
+        html += '</div><div class="table-shell"><table><thead><tr><th>Config</th>';
+        channels.forEach(function (c) {
+          html += '<th>' + esc(c.label) + ' TW</th><th>' + esc(c.label) + ' LW</th>';
+        });
+        html += '</tr></thead><tbody>';
+        if (!focusRows.length) {
+          html += '<tr><td colspan="8">No detail rows yet for this title.</td></tr>';
+        } else {
+          focusRows.forEach(function (r) {
+            var ch = r.channels || {};
+            html +=
+              '<tr class="' +
+              (r.config === 'Total' ? 'row-total' : '') +
+              '"><td>' +
+              esc(r.config) +
+              '</td>';
+            channels.forEach(function (c) {
+              var cell = ch[c.id] || {};
+              html +=
+                '<td class="num">' +
+                esc(fmt(cell.tw)) +
+                '</td><td class="num">' +
+                esc(fmt(cell.lw)) +
+                '</td>';
+            });
+            html += '</tr>';
+          });
+        }
+        html += '</tbody></table></div></section>';
+        $('view').innerHTML = html;
+        document.querySelectorAll('[data-cfg]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            state.config = btn.getAttribute('data-cfg');
+            renderTitleDetail(titleKey);
+          });
+        });
+      }
+      function renderRetailers() {
+        var live = liveChannels_().filter(function (c) {
+          return c.kind === 'retailer';
+        });
+        var html =
+          '<section class="section"><h2>Retailers breakdown</h2><p class="hint">Same channels as the Apps Script Web App. Updated ' +
+          esc(lastUpdatedLabel_()) +
+          '.</p>';
+        live.forEach(function (c) {
+          var isDigital =
+            c.id === 'digital_amazon' || c.id === 'digital_apple' || c.id === 'digital_itunes';
+          html +=
+            '<h3 style="margin:1rem 0 .4rem;font-size:1.05rem;font-weight:600">' +
+            esc(c.label) +
+            '</h3><div class="table-shell"><table><thead><tr><th>Artist</th><th>Title</th>' +
+            (isDigital ? '<th>Current</th>' : '<th>TW</th><th>LW</th>') +
+            '</tr></thead><tbody>';
+          var rows = (state.data.detail || []).filter(function (r) {
+            return r.config === 'Total';
+          });
+          var shown = 0;
+          rows.forEach(function (r) {
+            var cell = (r.channels && r.channels[c.id]) || {};
+            if ((cell.tw == null || cell.tw === '') && (cell.lw == null || cell.lw === '')) return;
+            shown++;
+            html +=
+              '<tr><td>' +
+              esc(r.artist) +
+              '</td><td><a class="name-link" href="#/title/' +
+              encodeURIComponent(r.titleKey) +
+              '">' +
+              esc(r.title) +
+              '</a></td><td class="num">' +
+              esc(fmt(cell.tw)) +
+              '</td>';
+            if (!isDigital) html += '<td class="num">' + esc(fmt(cell.lw)) + '</td>';
+            html += '</tr>';
+          });
+          if (!shown) {
+            html +=
+              '<tr><td colspan="' +
+              (isDigital ? '3' : '4') +
+              '">No ' +
+              esc(c.label) +
+              ' rows yet.</td></tr>';
+          }
+          html += '</tbody></table></div>';
+        });
+        html += '</section>';
+        $('view').innerHTML = html;
+      }
+      function renderAnalysis() {
+        $('view').innerHTML =
+          '<section class="section"><h2>Working analysis</h2><p class="hint">Placeholder — same as Web App. Use Summary + Detail for latest state.</p></section>';
+      }
+      function onPayload(payload) {
+        if (!payload || !payload.ok) {
+          setLiveStatus_((payload && payload.error) || 'Could not load week data.', true);
+          $('status').hidden = false;
+          $('status').className = 'status error';
+          $('status').textContent =
+            (payload && payload.error) ||
+            'Could not load. Re-paste Code.gs (JSONP) and Deploy → New version.';
+          state.data = payload || { week: {}, summary: [], detail: [], channels: [] };
+          route();
+          return;
+        }
+        state.data = payload;
+        setLiveStatus_('Live · last updated ' + lastUpdatedLabel_(), false);
+        $('status').hidden = true;
+        route();
+      }
+      function boot() {
+        var cfg = window.PRE_ORDER_DUAL || {};
+        var base = String(cfg.webAppUrl || '').replace(/\/$/, '');
+        if (!base) {
+          setLiveStatus_('Set webAppUrl in config.js', true);
+          return;
+        }
+        var url = base + '?api=week';
+        if (cfg.useJsonp) {
+          var cb = cfg.jsonpCallback || 'preOrderWeek';
+          window[cb] = function (payload) {
+            onPayload(payload);
+            try {
+              delete window[cb];
+            } catch (e) {
+              window[cb] = undefined;
+            }
+            var s = document.getElementById('preorder-jsonp');
+            if (s && s.parentNode) s.parentNode.removeChild(s);
+          };
+          var script = document.createElement('script');
+          script.id = 'preorder-jsonp';
+          script.src = url + '&callback=' + encodeURIComponent(cb);
+          script.onerror = function () {
+            setLiveStatus_('JSONP failed — redeploy Web App with latest Code.gs', true);
+            $('status').hidden = false;
+            $('status').className = 'status error';
+            $('status').textContent =
+              'Could not reach ' +
+              url +
+              '. Paste updated Code.gs → Deploy → Manage deployments → New version.';
+          };
+          document.body.appendChild(script);
+          return;
+        }
+        fetch(url)
+          .then(function (r) {
+            return r.json();
+          })
+          .then(onPayload)
+          .catch(function (err) {
+            setLiveStatus_(String(err && err.message ? err.message : err), true);
+          });
+      }
+      window.addEventListener('hashchange', route);
+      boot();
+    </script>
+  </body>
+</html>
